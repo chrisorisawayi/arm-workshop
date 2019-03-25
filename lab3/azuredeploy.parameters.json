@@ -1,23 +1,23 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "adminUsername": {
-            "value": "richeney"
-        },
-        "adminPassword": {
-            "reference": {
-                "keyVault": {
-                    "id": "/subscriptions/2ca40be1-7e80-4f2b-92f7-06b2123a68cc/resourceGroups/keyVaults/providers/Microsoft.KeyVault/vaults/richeneyKeyVault"
-                },
-                "secretName": "ubuntuDefaultPassword"
-            }
-        },
-        "vnetName": {
-            "value": "ubuntuVnet"
-        },
-        "subnetName": {
-            "value": "ubuntuSubnet"
-        }
+      "vmName": {
+          "value": "svr-ubuntu-01"
+      },
+      "adminUsername": {
+        "value": "techie"
+      },
+      "adminPasswordOrKey": {
+          "reference": {
+              "keyVault": {
+                  "id": "/subscriptions/02b44a0d-f98e-407e-b0c1-7d394305857e/resourceGroups/rg_arm_workshop_keyvaults/providers/Microsoft.KeyVault/vaults/kv-arm-workshop"
+              },
+              "secretName": "ubuntuDefaultPassword"
+          }
+      },
+      "dnsLabelPrefix": {
+        "value": "svr-ubuntu-01"
+      }
     }
-}
+  }

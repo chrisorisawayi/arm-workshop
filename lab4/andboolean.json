@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "SelectedDayOfWeek": {
+            "type": "string",
+            "allowedValues": [
+                "Sunday",
+                "Monday",
+                "Tuesday"
+            ]            
+        }
+    },
+    "variables": {
+        "DaySelected": "[concat('If', parameters('SelectedDayOfWeek'))]",
+        "IfSunday":{
+            "DayofWeek": "Sunday",
+            "DayNumber": "1"
+        },
+        "IfMonday": {
+            "DayofWeek": "Monday",
+            "DayNumber": "2"
+        },
+        "IfTuesday": {
+            "DayofWeek": "Tuesday",
+            "DayNumber": "3"
+        }        
+    },
+    "resources": [],
+    "outputs": {
+        "andExampleOutput": {
+            "value": "[and(bool('true'), bool('false'))]",
+            "type": "bool"
+        },
+        "orExampleOutput": {
+            "value": "[or(bool('true'), bool('false'))]",
+            "type": "bool"
+        },
+        "notExampleOutput": {
+            "value": "[not(bool('false'))]",
+            "type": "bool"
+        },
+        "DayOfWeek": {
+            "value": "[variables(concat('If', parameters('SelectedDayOfWeek')))]",
+            "type": "object"
+        }
+    }
+}

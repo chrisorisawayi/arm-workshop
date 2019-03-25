@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "webAppName": {
@@ -7,38 +7,64 @@
         }
     },
     "variables": {
-        "webAppPlan": "[concat(parameters('webAppName'), '-plan')]",
-        "webAppPlanId": "[resourceId('Microsoft.Web/serverfarms', variables('webAppPlan'))]"
+        "HostingPlanName": "[concat(parameters('webAppName'),'-plan')]",
+        "webAppPlanID": "[resourceId('Microsoft.Web/serverfarms', variables('HostingPlanName'))]"
+
     },
     "resources": [
         {
-            "apiVersion": "2016-08-01",
             "name": "[parameters('webAppName')]",
             "type": "Microsoft.Web/sites",
             "properties": {
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference('microsoft.insights/components/hybridxarm', '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "XDT_MicrosoftApplicationInsights_Mode",
+                            "value": "default"
+                        },
+                        {
+                            "name": "ApplicationInsightsAgent_EXTENSION_VERSION",   
+                            "value": "~2"
+                        }
+                    ]
+                },
                 "name": "[parameters('webAppName')]",
-                "serverFarmId": "[variables('webAppPlanId')]",
-                "hostingEnvironment": ""
+                "serverFarmId": "[variables('webAppPlanID')]"
             },
-            "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[variables('webAppPlanId')]"
-            ]
+                "[variables('webAppPlanID')]",
+                "microsoft.insights/components/hybridxarm"
+            ],
+            "apiVersion": "2016-03-01",
+            "location": "[resourceGroup().location]"
         },
         {
             "apiVersion": "2016-09-01",
-            "name": "[variables('webAppPlan')]",
+            "name": "[variables('hostingPlanName')]",
             "type": "Microsoft.Web/serverfarms",
             "location": "[resourceGroup().location]",
             "properties": {
-                "name": "[variables('webAppPlan')]",
+                "name": "[variables('hostingPlanName')]",
                 "workerSizeId": "0",
-                "reserved": false,
                 "numberOfWorkers": "1"
             },
             "sku": {
                 "Tier": "Free",
                 "Name": "F1"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01",
+            "name": "hybridxarm",
+            "type": "microsoft.insights/components",
+            "location": "West Europe",
+            "properties": {
+                "ApplicationId": "[parameters('webAppName')]",
+                "Request_Source": "IbizaWebAppExtensionCreate"
             }
         }
     ]
